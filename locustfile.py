@@ -6,8 +6,11 @@ import random
 
 class UserTasks(TaskSet):
 
+    def on_start(self):
+        self.client.get("/usuarios")
+
     @task
-    def registrar(self):
+    def criar(self):
         response = self.client.post("/registrar", json={
             "name": "Roberto Campos",
             "email": "robertocampos@email.com",
@@ -29,39 +32,43 @@ class WebsiteUser(HttpUser):
 
 
 class StepLoadShape(LoadTestShape):
-    """
-    A step load shape
-    Keyword arguments:
-        step_time -- Time between steps
-        step_load -- User increase amount at each step
-        spawn_rate -- Users to stop/start per second at every step
-        time_limit -- Time limit in seconds
-    """
 
-    step_time = 60
-    step_load = 6
-    spawn_rate = 10
-    time_limit = 600
+    stages = [
+        {"duration": 300, "users": 50, "spawn_rate": 5},
+        {"duration": 600, "users": 100, "spawn_rate": 5},
+        {"duration": 900, "users": 150, "spawn_rate": 5},
+        {"duration": 1200, "users": 200, "spawn_rate": 5},
+        {"duration": 1500, "users": 250, "spawn_rate": 5},
+        {"duration": 1800, "users": 1, "spawn_rate": 100},
+    ]
 
     def tick(self):
         run_time = self.get_run_time()
 
-        if run_time > self.time_limit:
-            # self.time_limit = 240
+        for stage in self.stages:
+            if run_time < stage["duration"]:
+                tick_data = (stage["users"], stage["spawn_rate"])
+                return tick_data
+
+        if run_time > 1800:
             self.reset_time()
-            return (6, 6)
+            return (1, 250)
 
-        current_step = math.floor(run_time / self.step_time) + 1
-        return (current_step * self.step_load, self.spawn_rate)
+    # step_time = 60
+    # step_load = 6
+    # spawn_rate = 10
+    # time_limit = 600
 
-    # """
-    # A step load shape
-    # Keyword arguments:
-    #     step_time -- Time between steps
-    #     step_load -- User increase amount at each step
-    #     spawn_rate -- Users to stop/start per second at every step
-    #     time_limit -- Time limit in seconds
-    # """
+    # def tick(self):
+    #     run_time = self.get_run_time()
+
+    #     if run_time > self.time_limit:
+    #         # self.time_limit = 240
+    #         self.reset_time()
+    #         return (6, 6)
+
+    #     current_step = math.floor(run_time / self.step_time) + 1
+    #     return (current_step * self.step_load, self.spawn_rate)
 
     # step_time = 30
     # step_load = 10
@@ -96,31 +103,20 @@ class StepLoadShape(LoadTestShape):
     #     current_step = math.floor(run_time / self.step_time) + 1
     #     return (current_step * self.step_load, self.spawn_rate)
 
+    # step_time = 30
+    # step_load = 10
+    # spawn_rate = 10
+    # time_limit = 120
 
-# class StepLoadShape(LoadTestShape):
-#     """
-#     A step load shape
-#     Keyword arguments:
-#         step_time -- Time between steps
-#         step_load -- User increase amount at each step
-#         spawn_rate -- Users to stop/start per second at every step
-#         time_limit -- Time limit in seconds
-#     """
+    # def tick(self):
+    #     run_time = self.get_run_time()
 
-#     step_time = 30
-#     step_load = 10
-#     spawn_rate = 10
-#     time_limit = 120
+    #     if run_time > self.time_limit:
+    #         current_time_limit = self.time_limit
+    #         self.time_limit = current_time_limit + 30
+    #         print(self.time_limit)
+    #         self.reset_time()
+    #         return (1,1)
 
-#     def tick(self):
-#         run_time = self.get_run_time()
-
-#         if run_time > self.time_limit:
-#             current_time_limit = self.time_limit
-#             self.time_limit = current_time_limit + 30
-#             print(self.time_limit)
-#             self.reset_time()
-#             return (1,1)
-
-#         current_step = math.floor(run_time / self.step_time) + 1
-#         return (current_step * self.step_load, self.spawn_rate)
+    #     current_step = math.floor(run_time / self.step_time) + 1
+    #     return (current_step * self.step_load, self.spawn_rate)
