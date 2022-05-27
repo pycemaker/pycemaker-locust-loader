@@ -34,12 +34,12 @@ class WebsiteUser(HttpUser):
 class StepLoadShape(LoadTestShape):
 
     stages = [
-        {"duration": 300, "users": 50, "spawn_rate": 5},
-        {"duration": 600, "users": 100, "spawn_rate": 5},
-        {"duration": 900, "users": 150, "spawn_rate": 5},
-        {"duration": 1200, "users": 200, "spawn_rate": 5},
-        {"duration": 1500, "users": 250, "spawn_rate": 5},
-        {"duration": 1800, "users": 1, "spawn_rate": 100},
+        {"duration": 300, "users": 300, "spawn_rate": 5},
+        {"duration": 600, "users": 500, "spawn_rate": 5},
+        {"duration": 900, "users": 700, "spawn_rate": 5},
+        {"duration": 1200, "users": 900, "spawn_rate": 5},
+        {"duration": 1500, "users": 1100, "spawn_rate": 5},
+        {"duration": 1800, "users": 10, "spawn_rate": 100},
     ]
 
     def tick(self):
