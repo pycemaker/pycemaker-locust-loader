@@ -7,10 +7,6 @@ import random
 class UserTasks(TaskSet):
 
     def on_start(self):
-        self.client.get("/usuarios")
-
-    @task
-    def criar(self):
         response = self.client.post("/registrar", json={
             "name": "Roberto Campos",
             "email": "robertocampos@email.com",
@@ -26,7 +22,7 @@ class UserTasks(TaskSet):
 
 
 class WebsiteUser(HttpUser):
-    host = "http://pycemaker.herokuapp.com"
+    host = "http://pcm.centralus.cloudapp.azure.com:8080"
     wait_time = constant(0.5)
     tasks = [UserTasks]
 
@@ -34,12 +30,18 @@ class WebsiteUser(HttpUser):
 class StepLoadShape(LoadTestShape):
 
     stages = [
-        {"duration": 300, "users": 300, "spawn_rate": 5},
-        {"duration": 600, "users": 500, "spawn_rate": 5},
-        {"duration": 900, "users": 700, "spawn_rate": 5},
-        {"duration": 1200, "users": 900, "spawn_rate": 5},
-        {"duration": 1500, "users": 1100, "spawn_rate": 5},
-        {"duration": 1800, "users": 10, "spawn_rate": 100},
+        {"duration": 300, "users": 10, "spawn_rate": 1},
+        {"duration": 600, "users": 50, "spawn_rate": 1},
+        {"duration": 900, "users": 100, "spawn_rate": 1},
+        {"duration": 1200, "users": 200, "spawn_rate": 1},
+        {"duration": 1500, "users": 400, "spawn_rate": 1},
+        {"duration": 1800, "users": 800, "spawn_rate": 1},
+        {"duration": 2100, "users": 1000, "spawn_rate": 1},
+        {"duration": 2400, "users": 800, "spawn_rate": 1},
+        {"duration": 2700, "users": 400, "spawn_rate": 1},
+        {"duration": 3000, "users": 200, "spawn_rate": 1},
+        {"duration": 3300, "users": 100, "spawn_rate": 1},
+        {"duration": 3600, "users": 10, "spawn_rate": 1},
     ]
 
     def tick(self):
@@ -50,9 +52,9 @@ class StepLoadShape(LoadTestShape):
                 tick_data = (stage["users"], stage["spawn_rate"])
                 return tick_data
 
-        if run_time > 1800:
+        if run_time > 3600:
             self.reset_time()
-            return (1, 250)
+            return (10, 10)
 
     # step_time = 60
     # step_load = 6
